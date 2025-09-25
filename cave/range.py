@@ -53,13 +53,13 @@ class Range():
         self.pool.create(self.libvirt_connection)
         return self.pool
          
-    def add_network(self, name: str, mode: str, ipv4: str, ipv4_subnet: str, ingress_route_subnet=None, ingress_route_gateway=None):
+    def add_network(self, name: str, mode: str, ipv4_cidr: str, ingress_route_subnet: str="", ingress_route_gateway: str="") -> Network:
 
         n = Network(name=name, 
                     host_isolated=True if mode == "" else False, 
-                    ipv4=ipv4, ipv4_subnet=ipv4_subnet, 
+                    ipv4_cidr=ipv4_cidr, 
                     isolate_guests=False,
-                    ipv6="", ipv6_prefix="", 
+                    ipv6_cidr="",  
                     mode=mode, 
                     ingress_route_subnet=ingress_route_subnet, ingress_route_gateway=ingress_route_gateway)
 
@@ -68,18 +68,18 @@ class Range():
         self.networks.append(n)
         return n
 
-    def add_management_network(self, name: str, ipv4: str, ipv4_subnet: str):
+    def add_management_network(self, name: str, ipv4_cidr: str, ):
         if self.management_network:
             logger.error("Multiple management networks for a single range is not supported for now")
             return
 
         n = Network(name=name, 
                     host_isolated=False, 
-                    ipv4=ipv4, ipv4_subnet=ipv4_subnet, 
+                    ipv4_cidr=ipv4_cidr, 
                     isolate_guests=False,
-                    ipv6="", ipv6_prefix="", 
+                    ipv6_cidr="", 
                     mode="open", 
-                    ingress_route_subnet=None, ingress_route_gateway=None)
+                    ingress_route_subnet="", ingress_route_gateway="")
 
         n.create(self.libvirt_connection)
         self.networks.append(n)
@@ -287,7 +287,7 @@ class Range():
         for domain in self.domains:
             logger.info(f"removing management network interface for domain {domain.name}")
             domain.remove_interface_for_network_name(self.management_network.name)
-        self.management_network.rm()
+        self.management_network.remove()
         self.networks.remove(self.management_network)
         logger.info(f"done removing management network {self.management_network.name}")
 

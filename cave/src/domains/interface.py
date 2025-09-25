@@ -4,7 +4,6 @@ from dataclasses import dataclass
 class Interface:
     mac: str
     network: Network
-    ipv4: str
-    prefix_length: int
+    ipv4_cidr: str
     is_mngmt: bool
 
