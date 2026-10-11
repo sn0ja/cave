@@ -1,3 +1,9 @@
+# Archived Project
+
+This project is no longer developed. 
+
+We recommend checking out **[Ludus](https://ludus.cloud/)**, a more mature, actively supported solution addressing a similar use case.
+
 # Cave
 
 **cave** is a Python-based automation toolkit for automated provisioning virtual infrastructure.  
